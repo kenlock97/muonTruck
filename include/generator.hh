@@ -18,6 +18,7 @@ class muonGenerator : public G4VUserPrimaryGeneratorAction {
 
 	private:
 		G4ParticleGun *fParticleGun;
+		G4double TruncatedExponential(G4double mean, G4double cut);
 };
 
 #endif

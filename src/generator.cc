@@ -11,6 +11,21 @@ muonGenerator::~muonGenerator() {
     delete fParticleGun;
 }
 
+G4double muonGenerator::TruncatedExponential(G4double mean, G4double cut) {
+    G4double result;
+    while (true) {
+      G4double cdf = G4UniformRand();
+      result = -mean * log(1-cdf);
+
+      if (result < cut) {
+		if (G4UniformRand() < exp(-result/mean)/exp(-cut/mean)) break;
+      }
+      else break;
+
+    }
+    return result;
+}
+
 void muonGenerator::GeneratePrimaries(G4Event *anEvent) {
 
 	const RPCConstruction *rpcConstruction = static_cast<const RPCConstruction *> (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
@@ -36,8 +51,20 @@ void muonGenerator::GeneratePrimaries(G4Event *anEvent) {
 	G4ThreeVector mom(-xMomRdmGenerate, -yMomRdmGenerate, -zMomRdmGenerate); 
     fParticleGun->SetParticleMomentumDirection(mom);
 
-	G4double momGenerate = G4UniformRand()*9 + 1;
-    fParticleGun->SetParticleMomentum(momGenerate*GeV);  // This is momentum only. Total energy is p^2+m^2.
+	//G4double momGenerate = G4UniformRand()*9 + 1;
+    //fParticleGun->SetParticleMomentum(momGenerate*GeV);  // This is momentum only. Total energy is p^2+m^2.
+
+	// derived from double exponential fit to PDG cosmic ray data
+	G4double fParticleEnergy;
+
+	if (G4UniformRand() < 0.39244) { 
+	  fParticleEnergy = TruncatedExponential(5.52641905*CLHEP::GeV, 0.6*CLHEP::GeV);
+	}
+	else {
+	  fParticleEnergy = TruncatedExponential(1.418029*CLHEP::GeV, 0.6*CLHEP::GeV);
+	}
+
+	fParticleGun->SetParticleEnergy(fParticleEnergy);
 
     fParticleGun->GeneratePrimaryVertex(anEvent);
 
