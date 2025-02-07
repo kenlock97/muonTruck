@@ -4,6 +4,7 @@
 #include "G4UserRunAction.hh"
 #include "G4AnalysisManager.hh"
 #include "G4Run.hh"
+#include <vector>
 
 class CreateNtuple : public G4UserRunAction {
 
@@ -13,6 +14,13 @@ class CreateNtuple : public G4UserRunAction {
 
 		virtual void BeginOfRunAction(const G4Run *);
 		virtual void EndOfRunAction(const G4Run *);
+
+		// Method to collect scattering angles from events
+    	void StoreScatteringAngles(const std::vector<double>& angles);
+
+	private:
+    	std::vector<double> fScatteringAngles;  // Holds all scattering angles from events
+		
 };
 
 

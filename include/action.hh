@@ -4,6 +4,9 @@
 #include "G4VUserActionInitialization.hh"
 #include "generator.hh"
 #include "createNtuple.hh"
+#include "MyEventAction.hh" 
+#include "MySteppingAction.hh"
+
 
 class Action : public G4VUserActionInitialization {
 	public:
