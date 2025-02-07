@@ -1,4 +1,5 @@
 #include "createNtuple.hh"
+#include <iostream>
 
 CreateNtuple::CreateNtuple() {
 
@@ -34,6 +35,11 @@ void CreateNtuple::BeginOfRunAction(const G4Run *run) {
 
 	G4String fileName = "output_"+strRunID.str()+".root";
 	manager->OpenFile(fileName);
+
+	// Open file for writing scattering angles
+    std::ofstream outFile("scattering_angles.txt");
+    outFile << "Scattering Angles (degrees)\n";
+    outFile.close();
 }
 
 void CreateNtuple::EndOfRunAction(const G4Run *) {
@@ -42,4 +48,17 @@ void CreateNtuple::EndOfRunAction(const G4Run *) {
 	manager->Write();
 	manager->CloseFile();
 
+	// Save collected angles to file
+    std::ofstream outFile("scattering_angles.txt", std::ios::app);
+    for (double angle : fScatteringAngles) {
+        outFile << angle << "\n";
+	}
+	outFile.close();
+
+	G4cout << "Scattering angles saved to scattering_angles.txt" << G4endl;
 }
+
+void CreateNtuple::StoreScatteringAngles(const std::vector<double>& angles) {
+    fScatteringAngles.insert(fScatteringAngles.end(), angles.begin(), angles.end());
+}
+
