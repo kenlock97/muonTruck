@@ -16,6 +16,7 @@ public:
 
 private:
     MyEventAction* fEventAction;  // Pointer to EventAction for storing angles
+    G4int currentEventID = -1;  // Track event ID
 };
 
 #endif  // MYSTEPPINGACTION_HH
